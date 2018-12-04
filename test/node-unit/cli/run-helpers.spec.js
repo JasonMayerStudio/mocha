@@ -1,6 +1,6 @@
 'use strict';
 
-const {validatePlugin} = require('../../../lib/cli/run-helpers');
+const {validatePlugin, list} = require('../../../lib/cli/run-helpers');
 const {createSandbox} = require('sinon');
 
 describe('cli "run" command', function() {
@@ -22,6 +22,28 @@ describe('cli "run" command', function() {
           'to throw',
           TypeError
         );
+      });
+    });
+
+    describe('list()', function() {
+      describe('when provided a flat array', function() {
+        it('should return a flat array', function() {
+          expect(list(['foo', 'bar']), 'to equal', ['foo', 'bar']);
+        });
+      });
+      describe('when provided a nested array', function() {
+        it('should return a flat array', function() {
+          expect(list([['foo', 'bar'], 'baz']), 'to equal', [
+            'foo',
+            'bar',
+            'baz'
+          ]);
+        });
+      });
+      describe('when given a comma-delimited string', function() {
+        it('should return a flat array', function() {
+          expect(list('foo,bar'), 'to equal', ['foo', 'bar']);
+        });
       });
     });
   });

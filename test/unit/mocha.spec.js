@@ -1,5 +1,6 @@
 'use strict';
 
+var utils = require('../../lib/utils');
 var Mocha = require('../../lib/mocha');
 var sinon = require('sinon');
 
@@ -13,6 +14,30 @@ describe('Mocha', function() {
 
   afterEach(function() {
     sandbox.restore();
+  });
+
+  describe('constructor', function() {
+    beforeEach(function() {
+      sandbox.stub(Mocha.prototype, 'useColors').returnsThis();
+      sandbox.stub(utils, 'deprecate');
+    });
+    it('should prefer "color" over "useColors"', function() {
+      // eslint-disable-next-line no-new
+      new Mocha({useColors: true, color: false});
+      expect(Mocha.prototype.useColors, 'was called with', false);
+    });
+
+    it('should assign "useColors" to "color"', function() {
+      // eslint-disable-next-line no-new
+      new Mocha({useColors: true});
+      expect(Mocha.prototype.useColors, 'was called with', true);
+    });
+
+    it('should call utils.deprecate()', function() {
+      // eslint-disable-next-line no-new
+      new Mocha({useColors: true});
+      expect(utils.deprecate, 'was called');
+    });
   });
 
   describe('.run(fn)', function() {
