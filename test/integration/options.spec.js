@@ -399,8 +399,9 @@ describe('options', function() {
      */
     var runExit = function(shouldExit, behavior) {
       return function(done) {
+        var timeout = this.timeout();
         this.timeout(0);
-        this.slow(3000);
+        this.slow(Infinity);
         var didExit = true;
         var t;
         var args = behaviors[behavior] ? [behaviors[behavior]] : [];
@@ -421,7 +422,7 @@ describe('options', function() {
           // this is the only way to kill the child, afaik.
           // after the process ends, the callback to `run()` above is handled.
           mocha.kill('SIGINT');
-        }, 2000);
+        }, timeout - 500);
       };
     };
 
